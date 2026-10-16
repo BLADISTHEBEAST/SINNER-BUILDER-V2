@@ -14,19 +14,22 @@ jobs:
       - name: Checkout source
         uses: actions/checkout@v4
 
-      - name: Install CMake
-        uses: lukka/get-cmake@latest
-
-      - name: Configure and build VST3
+      - name: Get JUCE
         shell: pwsh
         run: |
           git clone --branch 8.0.6 --depth 1 https://github.com/juce-framework/JUCE.git "$env:RUNNER_TEMP/JUCE"
-          cmake -S . -B build -G "Visual Studio 17 2022" -A x64 "-DJUCE_PATH=$env:RUNNER_TEMP/JUCE"
-          cmake --build build --config Release --target SINNER_BUILDER_VST3
 
-      - name: Upload VST3 artifact
+      - name: Configure project
+        shell: pwsh
+        run: |
+          cmake -S . -B build -G "Visual Studio 17 2022" -A x64 "-DJUCE_DIR=$env:RUNNER_TEMP/JUCE"
+
+      - name: Build plugin
+        run: cmake --build build --config Release --target SINNER_BUILDER
+
+      - name: Upload build files
         uses: actions/upload-artifact@v4
         with:
           name: SINNER-BUILDER-V2-Windows-VST3
-          path: build/**/SINNER BUILDER V2.vst3
+          path: build
           if-no-files-found: error
