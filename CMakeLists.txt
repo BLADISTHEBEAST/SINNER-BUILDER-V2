@@ -27,10 +27,10 @@ juce_add_plugin(SINNER_BUILDER
 )
 
 target_sources(SINNER_BUILDER PRIVATE
-    Source/PluginProcessor.cpp
-    Source/PluginProcessor.h
-    Source/PluginEditor.cpp
-    Source/PluginEditor.h
+    PluginProcessor.cpp
+    PluginProcessor.h
+    PluginEditor.cpp
+    PluginEditor.h
 )
 
 target_compile_features(SINNER_BUILDER PRIVATE cxx_std_17)
