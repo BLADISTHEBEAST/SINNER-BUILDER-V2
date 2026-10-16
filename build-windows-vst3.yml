@@ -1,0 +1,31 @@
+name: Build SINNER BUILDER VST3
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [ main ]
+
+jobs:
+  build-windows-vst3:
+    runs-on: windows-latest
+    steps:
+      - name: Check out SINNER BUILDER
+        uses: actions/checkout@v4
+
+      - name: Install JUCE source
+        shell: pwsh
+        run: git clone --depth 1 --branch 8.0.6 https://github.com/juce-framework/JUCE.git JUCE
+
+      - name: Configure x64 Release build
+        run: cmake -S . -B build -A x64
+
+      - name: Compile VST3
+        run: cmake --build build --config Release --target SINNER_BUILDER_VST3
+
+      - name: Upload VST3 build artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: SINNER-BUILDER-V2-Windows-VST3
+          path: build/SINNER_BUILDER_artefacts/Release/VST3/
+          if-no-files-found: error
+          compression-level: 6
